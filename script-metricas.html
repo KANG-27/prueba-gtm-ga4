@@ -1,0 +1,42 @@
+<script>
+    (function () {
+
+        // Convierte a número; si falta o llega "NA", devuelve 0
+        function toNumber(num) {
+            var amount = Number(num);
+            return isNaN(amount) ? 0 : amount;
+        }
+
+        // El equipo de analítica necesita la fecha en formato AAAA-MM-DD.
+        // Llega como AAAAMMDD; si no tiene 8 caracteres, se envía null
+        function formatDate(date) {
+            var dateString = String(date);
+            if (dateString.length !== 8) {
+                return null;
+            } else {
+                var year = dateString.substring(0, 4);
+                var month = dateString.substring(4, 6);
+                var day = dateString.substring(6, 8);
+                return year + "-" + month + "-" + day;
+            }
+        }
+
+        var totalPassengers = toNumber({{DLV - adult_num}}) + toNumber({{DLV - child_num}}) + toNumber({{DLV - infant_num}});
+
+        window.dataLayer = window.dataLayer || [];
+
+        // Limpia ecommerce para que flight_search no herede campos de search_flight
+        window.dataLayer.push({ ecommerce: null });
+
+        window.dataLayer.push({
+            event: "flight_search",
+            ecommerce: {
+                flight_from: {{DLV - flight_from}},
+                flight_to: {{DLV - flight_to}},
+                flight_type: {{DLV - trip_type}},
+                total_passengers: totalPassengers,
+                departure_date: formatDate({{DLV - date_departure}})
+            }
+        });
+    })();
+</script>
